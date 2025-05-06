@@ -1,155 +1,119 @@
-# Chatroom-system
-JavaFX Chat Room System
+# JavaFX Chat Room System
 
-Course: CSCI 400 – Advanced Applications Development  ·  Semester: Spring 2025  ·  Instructor: Prof. Alec Berenbaum  ·  Points: 100
+**Course:** CSCI 400 – Advanced Applications Development  
+**Semester:** Spring 2025  
+**Instructor:** Prof. Alec Berenbaum  
 
-A lightweight multi‑user chat application written in Java 11 with JavaFX 17.  It consists of two standalone GUI programs—ChatServer and ChatClient—and demonstrates sockets, multithreading, and reactive UI updates via Platform.runLater().
+A lightweight multi-user chat application written in Java 11 with JavaFX 17.  
+The project is split into two GUI programs:
 
-✨ Key Features
+* **ChatServer** – listens on **TCP 5000**, shows connected users, and broadcasts chat lines.  
+* **ChatClient** – lets a user connect, send messages, and disconnect gracefully.
 
-Category
+---
 
-Server
+##  Features
 
-Client
+| Category | Server | Client |
+|----------|--------|--------|
+| **GUI** | `ListView` of usernames; buttons **Drop Selected**, **Drop All**, **Exit** | Username / IP / Port fields; read-only log; enter-to-send text field; **Connect**, **Disconnect**, **Exit** |
+| **Networking** | One **acceptor** thread + one `ClientHandler` thread per connection | Reader thread keeps UI responsive |
+| **Broadcasts** | `[username]: message` fan-out to every client | Displays incoming lines instantly |
+| **Kick control** | Drop one user or everyone | Auto-re-enable **Connect** after disconnect |
 
-GUI
+---
 
-Live ListView of connected usernames; Drop Selected, Drop All, Exit buttons
-
-Username / IP / Port fields, read‑only chat log, enter‑to‑send text field; Connect, Disconnect, Exit buttons
-
-Networking
-
-Listens on TCP 5000; one ClientHandler thread per connection
-
-Maintains a reader thread so UI never blocks
-
-Broadcasts
-
-[username]: message fan‑out to every client
-
-Displays all server broadcasts instantly
-
-Kick‑out controls
-
-Drop one or all clients from the server window
-
-Auto‑re‑enable Connect when disconnected
-
-🗂 Project Layout
+##  Project Structure
 
 chat-room/
 ├── ChatServer/
-│   └── src/application/Main.java
+│ └── src/application/Main.java
 └── ChatClient/
-    └── src/application/Main.java
+└── src/application/Main.java
 
-Each project is an independent Java module ready to import into Eclipse 2021‑09 or later.
+markdown
+Copy
+Edit
 
-🚀 Getting Started
+---
 
-Prerequisites
+## Getting Started
 
-JDK 11 or newer
+### Prerequisites
 
-JavaFX SDK 17 (add to Module Path in Eclipse)
+* **JDK 11** (or newer)  
+* **JavaFX SDK 17** (added to Module Path)  
+* Eclipse 2021-09 or later – any IDE works if JavaFX is configured
 
-Tested on Eclipse 2023‑06; any IDE works if you add JavaFX correctly.
+### Build & Run
 
-Build & Run
+1. **Run the server**  
+   *Import* the **ChatServer** project → **Run As › Java Application**.  
+2. **Run one or more clients**  
+   *Import* **ChatClient** → run `Main.java` (open multiple instances if desired).  
+3. In each client window:  
+   * Username → any name  
+   * IP → `localhost`  
+   * Port → `5000`  
+   * Click **Connect**, then type messages and press **Enter**.  
+4. Server-side buttons: **Drop Selected**, **Drop All**, **Exit**.
 
-Import the ChatServer project → Run As ► Java Application.
+---
 
-Import the ChatClient project and run as many instances as you like.
+## Wire Protocol
 
-In each client:
-
-Username → your name
-
-IP → localhost
-
-Port → 5000
-
-Click Connect.
-
-Type in the message field and hit Enter to chat.
-
-🔄 Protocol Overview
-
-CLIENT →  <username>\n
-SERVER →  <username> has joined the chat\n
-CLIENT →  free‑form message\n
+CLIENT → <username>\n
+SERVER → <username> has joined the chat\n
+CLIENT → free-form chat line\n
 …repeat…
 
-DISCONNECT (socket close)
-SERVER →  <username> has left the chat\n
+(disconnect)
+SERVER → <username> has left the chat\n
 
-Every line ends with a single \n.  No binary framing means you can test with telnet.
+yaml
+Copy
+Edit
 
-🧵 Threading Model
+All messages are plain text with a single newline terminator, so Telnet/netcat can be used for quick testing.
 
-Server
+---
 
-Acceptor Thread – loops on ServerSocket.accept().
+##  Threading Model
 
-ClientHandler Thread – per‑connection; does blocking I/O.
+* **Server**  
+  * **Acceptor Thread** – loops on `ServerSocket.accept()`  
+  * **ClientHandler Thread** – per client, handles blocking I/O  
+  * UI updates marshalled with `Platform.runLater()`  
+* **Client**  
+  * **Reader Thread** – blocks on `BufferedReader.readLine()`  
+  * JavaFX Application Thread handles user input & outbound writes
 
-All GUI updates use Platform.runLater() to touch JavaFX nodes safely.
+---
 
-Client
+##  Rubric Mapping
 
-Reader Thread – waits on BufferedReader.readLine().
+| Grading Item | Implementation Reference |
+|--------------|--------------------------|
+| GUI layout (30 pts) | VBox/HBox spacing, equal-width buttons, Region spacer |
+| Networking & broadcast (30 pts) | `broadcast(String)` in server; reader thread in client |
+| Threading (20 pts) | Dedicated acceptor; one handler per client; `Platform.runLater()` |
+| Button state mgmt (10 pts) | Connect/Disconnect toggle; server kick buttons |
+| Code quality & error handling (10 pts) | Clear structure, try/catch, graceful socket close |
 
-JavaFX Application Thread handles user input and sends messages.
+---
 
-📝 Mapping to Grading Rubric
+## 📸 Screenshots *(placeholders)*
 
-Rubric Item
+[ Chat Server window with two clients connected ]
+[ Chat Client window showing chat log ]
 
-Where Implemented
+yaml
+Copy
+Edit
+Replace with real screenshots before submission.
 
-GUI layout (30 pts)
+---
 
-Strict VBox/HBox structure, equal‑width buttons, spacing, and Region spacers.
+##  License
 
-Networking & broadcast (30 pts)
-
-broadcast() method in Main (Server) plus reader thread in Client.
-
-Threading (20 pts)
-
-Dedicated acceptor + per‑client handlers; Platform.runLater() marshaling.
-
-Button state mgmt (10 pts)
-
-Connect/Disconnect enable‑disable toggles; Drop Selected/All logic.
-
-Code style & error handling (10 pts)
-
-Try/catch blocks, graceful socket close, clear comments.
-
-🖼️ Screenshots (placeholders)
-
-+-----------------------------------------------------+
-|  Chat Server (localhost:5000)                       |
-|  ┌───────────────────────────────┐  Drop Selected   |
-|  |  alice                        |  Drop All        |
-|  |  bob                          |  Exit            |
-|  └───────────────────────────────┘                  |
-+-----------------------------------------------------+
-
-+-----------------------------------------+
-| Chat Client – alice                     |
-| [log]                                    |
-| alice: hello                             |
-| bob: hi there!                           |
-|------------------------------------------|
-| [msg box]                                |
-+-----------------------------------------+
-
-(Add real screenshots before submission.)
-
-📄 License
-
-MIT License – see LICENSE for full text.
+Released under the **MIT License** – see `LICENSE` for details.

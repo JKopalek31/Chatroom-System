@@ -31,9 +31,13 @@ chat-room/
 └── ChatClient/
 └── src/application/Main.java
 
-markdown
-Copy
-Edit
+chat-room/
+├── ChatServer/
+│   └── src/application/Main.java
+└── ChatClient/
+    └── src/application/Main.java
+
+
 
 ---
 
@@ -90,29 +94,6 @@ All messages are plain text with a single newline terminator, so Telnet/netcat c
 
 ---
 
-##  Rubric Mapping
-
-| Grading Item | Implementation Reference |
-|--------------|--------------------------|
-| GUI layout (30 pts) | VBox/HBox spacing, equal-width buttons, Region spacer |
-| Networking & broadcast (30 pts) | `broadcast(String)` in server; reader thread in client |
-| Threading (20 pts) | Dedicated acceptor; one handler per client; `Platform.runLater()` |
-| Button state mgmt (10 pts) | Connect/Disconnect toggle; server kick buttons |
-| Code quality & error handling (10 pts) | Clear structure, try/catch, graceful socket close |
-
----
-
-## 📸 Screenshots *(placeholders)*
-
-[ Chat Server window with two clients connected ]
-[ Chat Client window showing chat log ]
-
-yaml
-Copy
-Edit
-Replace with real screenshots before submission.
-
----
 
 ##  License
 

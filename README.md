@@ -23,22 +23,15 @@ The project is split into two GUI programs:
 
 ---
 
-##  Project Structure
+## Project Structure
 
-chat-room/
-├── ChatServer/
-│ └── src/application/Main.java
-└── ChatClient/
-└── src/application/Main.java
-
+```text
 chat-room/
 ├── ChatServer/
 │   └── src/application/Main.java
 └── ChatClient/
     └── src/application/Main.java
-
-
-
+```
 ---
 
 ## Getting Started
